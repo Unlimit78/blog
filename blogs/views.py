@@ -1,6 +1,8 @@
-
+from django.core.mail import EmailMultiAlternatives
 from django.core.mail import send_mail
+from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
+from django.utils.html import strip_tags
 from django.views.generic import ListView,DetailView,FormView
 from django.http import HttpResponseRedirect
 from django.contrib.auth.views import LoginView,LogoutView
@@ -41,13 +43,15 @@ class PostCreateView(LoginRequiredMixin,FormView):
         return super(PostCreateView, self).form_valid(form)
     def send_mail(self,post):
         subject = 'New post'
-        message = 'Read "{}" at \n {} \n'.format(post.title,post.get_absolute_url())
+        message = "Hey new post !"
+        html_content = '<a href="{}">Click here</a>'.format(post.get_absolute_url())
         emails = []
         for user in User.objects.all():
             if self.request.user.blog in user.subscribed.all():
                 emails.append(user.email)
-        send_mail(subject,message,'your_account@gmail.com',emails)
-        print('hello')
+        msg = EmailMultiAlternatives(subject,message,'your_account@gmail.com',emails)
+        msg.attach_alternative(html_content,'text/html')
+        msg.send()
 
 class PostDetailView(DetailView):
     template_name = 'post_detail.html'

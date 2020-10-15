@@ -1,14 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>list</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% block title %}
+    Articles
+{% endblock title %}
+
+
 {% block content %}
-    <p><a href="{% url 'logout' %}">Log out</a></p>
-    <p><a href="{% url 'blogs' %}">Blogs</a></p>
-    <p><a href="{% url 'new_post' %}">New post</a></p>
+
     {% for blogs in subscribed %}
         {% for post in blogs.posts.all %}
                <p> {{ post.title }}
@@ -29,5 +26,4 @@
     {% endfor %}
 
 {% endblock %}
-</body>
-</html>
+
