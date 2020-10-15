@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>list</title>
+</head>
+<body>
+{% block content %}
+    <p><a href="{% url 'logout' %}">Log out</a></p>
+    <p><a href="{% url 'blogs' %}">Blogs</a></p>
+    {% for blogs in subscribed %}
+        {% for post in blogs.posts.all %}
+               <p> {{ post.title }}
+                {{ post.body }}
+                   {% if post not in user.is_readed.all %}
+                       <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" value="{{ post.pk }}" name="pk" id="pk">
+                            <input type="submit" value="Mark as read">
+                       </form>
+
+                       {% else %}
+                       Read
+                    {% endif %}
+               </p>
+            {% endfor %}
+    {% endfor %}
+
+{% endblock %}
+</body>
+</html>

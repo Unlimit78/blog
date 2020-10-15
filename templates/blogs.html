@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Blogs</title>
+</head>
+<body>
+{% block content%}
+    {% for blog in blogs %}
+        {% if blog != user.blog %}
+        <p>{{ blog.title }}
+
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" value="{{ blog.pk }}" name="pk" id="pk">
+                    {% if blog in user.subscribed.all %}
+                    <input type="submit" value="Unsubscribe">
+                        {% else %}
+                        <input type="submit" value="Subscribe">
+                        {% endif %}
+                </form>
+
+        </p>
+        {% endif %}
+    {% endfor %}
+{% endblock content %}
+
+</body>
+</html>
