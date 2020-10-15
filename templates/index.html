@@ -8,10 +8,12 @@
 {% block content %}
     <p><a href="{% url 'logout' %}">Log out</a></p>
     <p><a href="{% url 'blogs' %}">Blogs</a></p>
+    <p><a href="{% url 'new_post' %}">New post</a></p>
     {% for blogs in subscribed %}
         {% for post in blogs.posts.all %}
                <p> {{ post.title }}
                 {{ post.body }}
+                   <a href="{{ post.get_absolute_url }}">link</a>
                    {% if post not in user.is_readed.all %}
                        <form method="post">
                             {% csrf_token %}

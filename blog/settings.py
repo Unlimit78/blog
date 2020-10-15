@@ -122,3 +122,12 @@ LOGIN_REDIRECT_URL = 'index'
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'fderg12345@gmail.com'
+EMAIL_HOST_PASSWORD = 'yarrhmbywokpufou' #past the key or password app here
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+

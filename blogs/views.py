@@ -1,10 +1,12 @@
-from django.urls import reverse
-from django.views.generic import ListView,DetailView,View
+
+from django.core.mail import send_mail
+from django.urls import reverse, reverse_lazy
+from django.views.generic import ListView,DetailView,FormView
 from django.http import HttpResponseRedirect
 from django.contrib.auth.views import LoginView,LogoutView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Blog,Post,User
-
+from .forms import PostForm
 
 class PostListView(LoginRequiredMixin,ListView):
     context_object_name = "subscribed"
@@ -27,6 +29,29 @@ class PostListView(LoginRequiredMixin,ListView):
 
         context['user'] = user
         return context
+
+class PostCreateView(LoginRequiredMixin,FormView):
+    template_name = 'new_post.html'
+    form_class = PostForm
+    success_url = reverse_lazy('index')
+    def form_valid(self, form):
+        post = form.save()
+        self.request.user.blog.posts.add(post)
+        self.send_mail(post)
+        return super(PostCreateView, self).form_valid(form)
+    def send_mail(self,post):
+        subject = 'New post'
+        message = 'Read "{}" at \n {} \n'.format(post.title,post.get_absolute_url())
+        emails = []
+        for user in User.objects.all():
+            if self.request.user.blog in user.subscribed.all():
+                emails.append(user.email)
+        send_mail(subject,message,'your_account@gmail.com',emails)
+        print('hello')
+
+class PostDetailView(DetailView):
+    template_name = 'post_detail.html'
+    model = Post
 
 class BlogListView(LoginRequiredMixin,ListView):
     queryset = Blog.objects.all()
